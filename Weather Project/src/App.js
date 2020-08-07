@@ -1,53 +1,42 @@
 import React from "react";
 import "./styles.css";
 
+import Form from "./Form";
+
+let userLocation = "";
+
 class App extends React.Component {
-  constructor(props)
-  {
+  constructor(props) {
     super(props);
     this.state = {
-      location: ''
-      
+      location: "",
+      userLocationexists: false,
     };
-    this.handleChange = this.handleChange.bind(this)
-    this.handleSubmit = this.handleSubmit.bind(this)
-    this.resetStorage = this.resetStorage.bind(this)
+    this.resetStorage = this.resetStorage.bind(this);
+  }
+  resetStorage() {
+    localStorage.clear();
+    this.setState({userLocationexists: false})
+    userLocation = ""
+  }
+  componentDidMount() {
+    userLocation = localStorage.getItem("localLocation");
+    if(userLocation !== null)
+    {
+      this.setState({userLocationexists: true})
+      console.log(userLocation)
+    }
   }
   
-  handleSubmit(event) 
-  {
-    alert('Location: ' + this.state.location)
-    localStorage.setItem('localLocation', this.state.location)
-    event.preventDefault()
-  }
-  handleChange(event)
-  {
-    this.setState({location: event.target.value})
-  }
-  resetStorage()
-  {
-    localStorage.clear()
-  }
-  componentDidMount()
-  {
-    const location = localStorage.getItem('localLocation')
-    console.log(location)
-  }
-  render(){
-  return (
-    <div>
-    <form onSubmit={this.handleSubmit}>
-      <label>
-        Location:
-        <input type="text" value={this.state.location} onChange={this.handleChange}/>
-      </label>
-      <input type="submit" value="Submit" />
-    </form>
-    
-    <button onClick={this.resetStorage}>Reset</button>
-    </div>
-  );
+  render() {
+    return (
+      <div>
+        {!this.state.userLocationexists && <Form />}
+        <button onClick={this.resetStorage}>Reset</button>
+        <h1>Location: {userLocation}</h1>
+      </div>
+    );
   }
 }
 
-export default App
+export default App;
