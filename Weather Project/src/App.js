@@ -1,14 +1,22 @@
 import React from "react";
 import "./styles.css";
 
+import LocationDisplay from "./LocationDisplay";
 import Form from "./Form";
 
-let userLocation = "";
+export let userLocation = "";
 let apiKey = "hoArfRosT1215";
 let locationKey = "";
-let currentTemp = "";
-let weatherText = "";
-let userState = "";
+export let currentTemp = "";
+export let weatherText = "";
+export let userState = "";
+
+const buttonStyle = {
+  padding: "5px",
+  align: "center",
+  justifyContent: "center",
+  display: "flex"
+};
 
 class App extends React.Component {
   constructor(props) {
@@ -22,34 +30,40 @@ class App extends React.Component {
     this.resetStorage = this.resetStorage.bind(this);
     this.getConditions = this.getConditions.bind(this);
   }
+
   resetStorage() {
     localStorage.clear();
-    this.setState({ userLocationexists: false });
+    this.setState({ userLocationexists: false, isLoaded: false });
     userLocation = "";
   }
+
   componentDidMount() {
     userLocation = localStorage.getItem("localLocation");
     if (userLocation !== null) {
       this.setState({ userLocationexists: true });
-      let locationUrl =
-        "https://apidev.accuweather.com/locations/v1/search?q=" +
-        userLocation +
-        "&apikey=" +
-        apiKey;
-      console.log(locationUrl);
-      fetch(locationUrl)
-        .then((res) => res.json())
-        .then((json) => {
-          this.setState({
-            isLoaded: true,
-            items: json
-          });
-          locationKey = this.state.items[0].Key;
-          userLocation = this.state.items[0].LocalizedName;
-          userState = this.state.items[0].AdministrativeArea.LocalizedName;
-          this.getConditions(locationKey);
-        });
+      this.getLocation();
     }
+  }
+
+  getLocation() {
+    let locationUrl =
+      "https://apidev.accuweather.com/locations/v1/search?q=" +
+      userLocation +
+      "&apikey=" +
+      apiKey;
+    console.log(locationUrl);
+    fetch(locationUrl)
+      .then((res) => res.json())
+      .then((json) => {
+        this.setState({
+          isLoaded: true,
+          items: json
+        });
+        locationKey = this.state.items[0].Key;
+        userLocation = this.state.items[0].LocalizedName;
+        userState = this.state.items[0].AdministrativeArea.LocalizedName;
+        this.getConditions(locationKey);
+      });
   }
 
   getConditions(key) {
@@ -75,14 +89,18 @@ class App extends React.Component {
 
   render() {
     return (
-      <div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center"
+        }}
+      >
         {!this.state.userLocationexists && <Form />}
-        <button onClick={this.resetStorage}>Reset</button>
-        <h1>
-          Location: {userLocation}, {userState}
-        </h1>
-        <p>Current Forecast: {currentTemp} Fahrenheight</p>
-        <p>{weatherText}</p>
+        <button style={buttonStyle} onClick={this.resetStorage}>
+          Reset
+        </button>
+        {this.state.isLoaded && <LocationDisplay />}
       </div>
     );
   }

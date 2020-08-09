@@ -1,10 +1,10 @@
 import React from "react";
 import "./styles.css";
 
-const currentConUrl =
-  "http://apidev.accuweather.com/currentconditions/v1/335315.json?apikey=apiKey";
 const formstyle = {
-  padding: "5px"
+  padding: "5px",
+  textAlign: "center",
+  align: "center"
 };
 
 export default class Form extends React.Component {
@@ -24,7 +24,7 @@ export default class Form extends React.Component {
   getLocation = (locationInfo) => {};
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
+      <form style={formstyle} onSubmit={this.handleSubmit}>
         <label>
           Location:
           <input
