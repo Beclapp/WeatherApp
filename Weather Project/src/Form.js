@@ -7,6 +7,13 @@ const formstyle = {
   align: "center"
 };
 
+const buttonstyle = {
+  padding: "5px",
+  textAlign: "center",
+  align: "center",
+  margin: "5px"
+};
+
 export default class Form extends React.Component {
   state = {
     location: "",
@@ -34,7 +41,7 @@ export default class Form extends React.Component {
             onChange={this.handleChange}
           />
         </label>
-        <input style={formstyle} type="submit" value="Submit" />
+        <input style={buttonstyle} type="submit" value="Submit" />
       </form>
     );
   }

@@ -2,6 +2,7 @@ import React from "react";
 import "./styles.css";
 
 import LocationDisplay from "./LocationDisplay";
+
 import Form from "./Form";
 
 export let userLocation = "";
@@ -10,12 +11,15 @@ let locationKey = "";
 export let currentTemp = "";
 export let weatherText = "";
 export let userState = "";
+export let isRaining = false;
+export let isDayTime = true;
 
 const buttonStyle = {
   padding: "5px",
   align: "center",
   justifyContent: "center",
-  display: "flex"
+  display: "flex",
+  margin: "5px"
 };
 
 class App extends React.Component {
@@ -33,6 +37,7 @@ class App extends React.Component {
 
   resetStorage() {
     localStorage.clear();
+    isDayTime = true;
     this.setState({ userLocationexists: false, isLoaded: false });
     userLocation = "";
   }
@@ -81,6 +86,13 @@ class App extends React.Component {
         });
         currentTemp = this.state.items[0].Temperature.Imperial.Value;
         weatherText = this.state.items[0].WeatherText;
+        isRaining = this.state.items[0].HasPrecipitation;
+        isDayTime = this.state.items[0].IsDayTime;
+        if (isDayTime) {
+          document.body.style = "background: lightblue";
+        } else {
+          document.body.style = "background: darkgrey";
+        }
         this.setState({
           isLoaded: true
         });
@@ -90,17 +102,20 @@ class App extends React.Component {
   render() {
     return (
       <div
+        id="root"
         style={{
           display: "flex",
           justifyContent: "center",
-          alignItems: "center"
+          alignItems: "center",
+          border: "border-dark"
         }}
       >
         {!this.state.userLocationexists && <Form />}
+
+        {this.state.isLoaded && <LocationDisplay />}
         <button style={buttonStyle} onClick={this.resetStorage}>
           Reset
         </button>
-        {this.state.isLoaded && <LocationDisplay />}
       </div>
     );
   }
